@@ -169,7 +169,7 @@ function focusWindow(id) {
   const state = windows.get(id); if (!state) return;
   for (const other of windows.values()) other.el.classList.remove('active-window');
   state.el.hidden = false; state.el.classList.add('active-window'); state.el.style.zIndex = ++zIndex;
-  document.querySelector('.active-app-name').textContent = state.title;
+  desktop.querySelector('.active-app-name').textContent = state.title;
 }
 function updateDock() {
   for (const button of desktop.querySelectorAll('.dock-item')) button.classList.toggle('running', windows.has(button.dataset.app));
@@ -208,7 +208,7 @@ function closeWindow(id) {
   if (id === 'game') stopSnake();
   if (id === 'algorithms') { sortRunning = false; clearTimeout(sortTimer); }
   const visible = [...windows.entries()].filter(([, s]) => !s.el.hidden);
-  if (visible.length) focusWindow(visible.at(-1)[0]); else document.querySelector('.active-app-name').textContent = 'Desktop';
+  if (visible.length) focusWindow(visible.at(-1)[0]); else desktop.querySelector('.active-app-name').textContent = 'Desktop';
 }
 function openApp(id) { if (!appInfo[id]) return; openWindow(id, appInfo[id].title, appContent(id)); }
 
@@ -222,7 +222,7 @@ desktop.addEventListener('click', e => {
   if (action) {
     const el = action.closest('.retro-window'), id = el.dataset.window;
     if (action.dataset.windowAction === 'close') closeWindow(id);
-    else if (action.dataset.windowAction === 'minimize') { el.hidden = true; const next = [...windows.entries()].reverse().find(([, s]) => !s.el.hidden); if (next) focusWindow(next[0]); else document.querySelector('.active-app-name').textContent = 'Desktop'; }
+    else if (action.dataset.windowAction === 'minimize') { el.hidden = true; const next = [...windows.entries()].reverse().find(([, s]) => !s.el.hidden); if (next) focusWindow(next[0]); else desktop.querySelector('.active-app-name').textContent = 'Desktop'; }
     else { el.classList.toggle('maximized'); action.setAttribute('aria-label', `${el.classList.contains('maximized') ? 'Restore' : 'Maximize'} ${windows.get(id).title}`); }
   }
   const control = e.target.closest('[data-action]');
