@@ -1,0 +1,151 @@
+{
+  "profile": {
+    "name": "sairamsrujan",
+    "shortName": "sairamsrujan",
+    "role": "AI & SOFTWARE DEVELOPMENT",
+    "tagline": "Building useful things. Exploring how they work.",
+    "welcome": "Welcome to my little corner of the internet. I build projects around machine learning, document intelligence, and software that makes complex information easier to explore.",
+    "about": [
+      "My public work explores a common question: how can we make intelligent software more useful, understandable, and trustworthy?",
+      "From answers grounded in GitHub history to active-learning annotation tools, I enjoy turning technical ideas into working applications. Take a look around \u2014 every project here links to its source code."
+    ],
+    "github": "https://github.com/sairamsrujan",
+    "githubUsername": "sairamsrujan",
+    "email": "",
+    "linkedin": "",
+    "location": "",
+    "resumeUrl": "",
+    "avatarUrl": "",
+    "availability": ""
+  },
+  "projects": [
+    {
+      "id": "PatchContext",
+      "name": "PatchContext",
+      "description": "RAG over the fastapi/fastapi development history with verified citations and a hallucination guard",
+      "language": "Python",
+      "tags": [
+        "fastapi",
+        "hallucination-detection",
+        "llm",
+        "rag"
+      ],
+      "github": "https://github.com/sairamsrujan/PatchContext",
+      "demo": "https://patchcontext-104976457352.us-central1.run.app",
+      "icon": "search"
+    },
+    {
+      "id": "RepoMind",
+      "name": "RepoMind",
+      "description": "Ask any public GitHub repository why it evolved the way it did. Answers are grounded in real commits, PRs, issues and reviews, carry inline citations to the exact GitHub page, and are verified by a two-stage guard that declines rather than guessing.",
+      "language": "Python",
+      "tags": [
+        "bm25",
+        "chromadb",
+        "github-api",
+        "hallucination-detection"
+      ],
+      "github": "https://github.com/sairamsrujan/RepoMind",
+      "demo": "",
+      "icon": "brain"
+    },
+    {
+      "id": "labelforge",
+      "name": "LabelForge",
+      "description": "Active-learning data annotation platform \u2014 FastAPI + Next.js, offline CPU ML (YOLOv8n ONNX + zero-shot NLI), trust-weighted consensus, kappa quality reports, measured experiments",
+      "language": "Python",
+      "tags": [
+        "active-learning",
+        "computer-vision",
+        "data-annotation",
+        "fastapi"
+      ],
+      "github": "https://github.com/sairamsrujan/labelforge",
+      "demo": "",
+      "icon": "tag"
+    },
+    {
+      "id": "GraphGuard",
+      "name": "GraphGuard",
+      "description": "Graph ML fraud detection benchmarked honestly under temporal distribution shift \u2014 drift-triggered retraining, three explainability methods, and an inductive scoring API.",
+      "language": "Python",
+      "tags": [],
+      "github": "https://github.com/sairamsrujan/GraphGuard",
+      "demo": "",
+      "icon": "graph"
+    },
+    {
+      "id": "papers-explained",
+      "name": "Papers, Explained",
+      "description": "Fifty-five landmark AI papers \u2014 checksummed, explained, and drawn as a wall of spines. Every figure rebuilt from the source PDF, every number traceable. Live: https://sairamsrujan.github.io/papers-explained/",
+      "language": "TypeScript",
+      "tags": [],
+      "github": "https://github.com/sairamsrujan/papers-explained",
+      "demo": "https://sairamsrujan.github.io/papers-explained/",
+      "icon": "book"
+    },
+    {
+      "id": "DocuMind-AI",
+      "name": "DocuMind AI",
+      "description": "Offline document intelligence system \u2014 Classification, Entity Extraction, RAG Q&A",
+      "language": "Python",
+      "tags": [],
+      "github": "https://github.com/sairamsrujan/DocuMind-AI",
+      "demo": "",
+      "icon": "document"
+    }
+  ],
+  "experience": [
+    {
+      "title": "Celebal Excellence Internship",
+      "organization": "Celebal Technologies",
+      "period": "2026",
+      "description": "Data Science track. Public repository of weekly assignments, tasks, and a final capstone project.",
+      "url": "https://github.com/sairamsrujan/celebal-excellence-internship"
+    }
+  ],
+  "skills": [
+    {
+      "title": "AI & machine learning",
+      "items": [
+        "Retrieval-augmented generation",
+        "Natural language processing",
+        "Computer vision",
+        "Active learning",
+        "Graph machine learning"
+      ]
+    },
+    {
+      "title": "Languages & frameworks",
+      "items": [
+        "Python",
+        "TypeScript",
+        "FastAPI",
+        "Next.js",
+        "Streamlit"
+      ]
+    },
+    {
+      "title": "Tools & techniques",
+      "items": [
+        "Vector search",
+        "BM25",
+        "ChromaDB",
+        "Ollama",
+        "ONNX",
+        "Git & GitHub"
+      ]
+    }
+  ],
+  "settings": {
+    "desktopColor": "#55a7aa",
+    "defaultApp": "about",
+    "soundEnabled": false,
+    "showSceneOnLoad": true
+  },
+  "source": {
+    "github": "https://api.github.com/users/sairamsrujan/repos",
+    "lastSynced": "2026-10-22",
+    "note": "Project descriptions and internship details come from public GitHub repositories. Add personal background, education and a resume after review."
+  }
+}

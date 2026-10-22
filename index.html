@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#55a7aa" />
+    <meta name="description" content="Explore sairamsrujan's AI and software projects inside an interactive retro computer." />
+    <title>sairamsrujan — Portfolio</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <a class="skip-link" href="#desktop">Skip to portfolio</a>
+    <div id="scene" aria-hidden="true"></div>
+    <div id="screen-layer"></div>
+    <div class="scene-controls">
+      <button id="sound-toggle" class="scene-control" aria-label="Enable sound" title="Enable sound">♪<span class="muted-slash">/</span></button>
+      <button id="view-toggle" class="scene-control" aria-label="Switch to desktop view" title="Switch to desktop view">▣</button>
+    </div>
+    <div class="intro-ui" id="intro">
+      <div class="intro-caption"><span class="status-led"></span> PERSONAL COMPUTER · PORTFOLIO EDITION</div>
+      <button id="start-button">Click anywhere to start <span>↵</span></button>
+      <span class="intro-hint">A little nostalgia. A lot to explore.</span>
+    </div>
+    <div class="scene-label" id="scene-label">SAIRAMSRUJAN <span>© <span id="year"></span></span></div>
+    <div id="toasts" role="status" aria-live="polite"></div>
+    <noscript><main style="padding:3rem;font-family:monospace"><h1>sairamsrujan</h1><p>This interactive portfolio needs JavaScript.</p><a href="https://github.com/sairamsrujan">Explore my projects on GitHub</a></main></noscript>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

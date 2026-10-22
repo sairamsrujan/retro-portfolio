@@ -1,0 +1,186 @@
+[
+  {
+    "name": "PatchContext",
+    "description": "RAG over the fastapi/fastapi development history with verified citations and a hallucination guard",
+    "html_url": "https://github.com/sairamsrujan/PatchContext",
+    "homepage": "https://patchcontext-104976457352.us-central1.run.app",
+    "language": "Python",
+    "topics": [
+      "fastapi",
+      "hallucination-detection",
+      "llm",
+      "rag",
+      "retrieval-augmented-generation",
+      "streamlit",
+      "vector-search"
+    ],
+    "stargazers_count": 0
+  },
+  {
+    "name": "papers-explained",
+    "description": "Fifty-five landmark AI papers \u2014 checksummed, explained, and drawn as a wall of spines. Every figure rebuilt from the source PDF, every number traceable. Live: https://sairamsrujan.github.io/papers-explained/",
+    "html_url": "https://github.com/sairamsrujan/papers-explained",
+    "homepage": null,
+    "language": "TypeScript",
+    "topics": [],
+    "stargazers_count": 0
+  },
+  {
+    "name": "labelforge",
+    "description": "Active-learning data annotation platform \u2014 FastAPI + Next.js, offline CPU ML (YOLOv8n ONNX + zero-shot NLI), trust-weighted consensus, kappa quality reports, measured experiments",
+    "html_url": "https://github.com/sairamsrujan/labelforge",
+    "homepage": null,
+    "language": "Python",
+    "topics": [
+      "active-learning",
+      "computer-vision",
+      "data-annotation",
+      "fastapi",
+      "kappa-statistics",
+      "machine-learning",
+      "nextjs",
+      "nlp",
+      "yolo"
+    ],
+    "stargazers_count": 0
+  },
+  {
+    "name": "RepoMind",
+    "description": "Ask any public GitHub repository why it evolved the way it did. Answers are grounded in real commits, PRs, issues and reviews, carry inline citations to the exact GitHub page, and are verified by a two-stage guard that declines rather than guessing.",
+    "html_url": "https://github.com/sairamsrujan/RepoMind",
+    "homepage": null,
+    "language": "Python",
+    "topics": [
+      "bm25",
+      "chromadb",
+      "github-api",
+      "hallucination-detection",
+      "information-retrieval",
+      "llm",
+      "natural-language-inference",
+      "ollama",
+      "python",
+      "rag",
+      "retrieval-augmented-generation",
+      "streamlit"
+    ],
+    "stargazers_count": 0
+  },
+  {
+    "name": "GraphGuard",
+    "description": "Graph ML fraud detection benchmarked honestly under temporal distribution shift \u2014 drift-triggered retraining, three explainability methods, and an inductive scoring API.",
+    "html_url": "https://github.com/sairamsrujan/GraphGuard",
+    "homepage": null,
+    "language": "Python",
+    "topics": [],
+    "stargazers_count": 0
+  },
+  {
+    "name": "gta6-leonida",
+    "description": null,
+    "html_url": "https://github.com/sairamsrujan/gta6-leonida",
+    "homepage": null,
+    "language": "CSS",
+    "topics": [],
+    "stargazers_count": 0
+  },
+  {
+    "name": "celebal-excellence-internship",
+    "description": "My work from the Celebal Excellence Internship 2026 \u2014 Data Science track. Weekly assignments, tasks, and the final capstone project at Celebal Technologies.",
+    "html_url": "https://github.com/sairamsrujan/celebal-excellence-internship",
+    "homepage": null,
+    "language": "Jupyter Notebook",
+    "topics": [],
+    "stargazers_count": 0
+  },
+  {
+    "name": "DocuMind-AI",
+    "description": "Offline document intelligence system \u2014 Classification, Entity Extraction, RAG Q&A",
+    "html_url": "https://github.com/sairamsrujan/DocuMind-AI",
+    "homepage": null,
+    "language": "Python",
+    "topics": [],
+    "stargazers_count": 0
+  },
+  {
+    "name": "leetcode-mcp",
+    "description": null,
+    "html_url": "https://github.com/sairamsrujan/leetcode-mcp",
+    "homepage": null,
+    "language": null,
+    "topics": [],
+    "stargazers_count": 0
+  },
+  {
+    "name": "vulnerability_scanner",
+    "description": null,
+    "html_url": "https://github.com/sairamsrujan/vulnerability_scanner",
+    "homepage": null,
+    "language": null,
+    "topics": [],
+    "stargazers_count": 0
+  },
+  {
+    "name": "dataset-quality-platform",
+    "description": null,
+    "html_url": "https://github.com/sairamsrujan/dataset-quality-platform",
+    "homepage": null,
+    "language": "Python",
+    "topics": [],
+    "stargazers_count": 0
+  },
+  {
+    "name": "AI-Decision-Traceability-Engine",
+    "description": null,
+    "html_url": "https://github.com/sairamsrujan/AI-Decision-Traceability-Engine",
+    "homepage": null,
+    "language": "Python",
+    "topics": [],
+    "stargazers_count": 0
+  },
+  {
+    "name": "ai-code-vulnerability-scanner-",
+    "description": null,
+    "html_url": "https://github.com/sairamsrujan/ai-code-vulnerability-scanner-",
+    "homepage": null,
+    "language": "Python",
+    "topics": [],
+    "stargazers_count": 0
+  },
+  {
+    "name": "ex",
+    "description": null,
+    "html_url": "https://github.com/sairamsrujan/ex",
+    "homepage": null,
+    "language": null,
+    "topics": [],
+    "stargazers_count": 0
+  },
+  {
+    "name": "CareWise",
+    "description": null,
+    "html_url": "https://github.com/sairamsrujan/CareWise",
+    "homepage": null,
+    "language": "HTML",
+    "topics": [],
+    "stargazers_count": 0
+  },
+  {
+    "name": "IPL-PREDICTOR",
+    "description": null,
+    "html_url": "https://github.com/sairamsrujan/IPL-PREDICTOR",
+    "homepage": null,
+    "language": "Jupyter Notebook",
+    "topics": [],
+    "stargazers_count": 0
+  },
+  {
+    "name": "Youtube-vedio-downloaders",
+    "description": null,
+    "html_url": "https://github.com/sairamsrujan/Youtube-vedio-downloaders",
+    "homepage": null,
+    "language": "CSS",
+    "topics": [],
+    "stargazers_count": 0
+  }
+]
