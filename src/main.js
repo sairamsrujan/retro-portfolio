@@ -19,6 +19,8 @@ document.querySelector('#year').textContent = new Date().getFullYear();
 document.documentElement.style.setProperty('--desktop-color', settings.desktopColor);
 
 function icon(type, className = '') {
+  const original = {doom:'doom-icon.png',finder:'finder-icon.png',folder:'folder-icon.png',about:'about-app.png',contact:'contact-app.png',skills:'skills-icon.png',terminal:'terminal-icon.png',algorithms:'algorithm-visualizer-icon.png',document:'file-icon.png',resume:'icon-documents-folder.png',trash:'trash-icon.png'};
+  if(original[type]) return `<img class="app-icon ${className}" src="/reference/icons/${original[type]}" alt="" draggable="false">`;
   const shapes = {
     folder: '<path fill="#67b8db" d="M3 12h16l5 5h36v37H3z"/><path fill="#a0d9ed" d="M3 17h57v37H3z"/><path stroke="#4285a4" d="M4 20h55"/>',
     about: '<rect x="9" y="6" width="46" height="51" rx="4" fill="#d3cdb5"/><circle cx="32" cy="24" r="9" fill="#8f9a96"/><path fill="#8f9a96" d="M17 46c0-17 30-17 30 0"/><path stroke="#727b76" d="M19 51h26"/>',
@@ -41,7 +43,7 @@ function icon(type, className = '') {
 
 const appInfo = {
   about: { title: 'About', icon: 'about' },
-  projects: { title: 'Projects', icon: 'folder' },
+  projects: { title: 'Projects', icon: 'finder' },
   contact: { title: 'Contact', icon: 'contact' },
   skills: { title: 'Skills', icon: 'skills' },
   terminal: { title: 'Terminal', icon: 'terminal' },
@@ -49,6 +51,7 @@ const appInfo = {
   resume: { title: 'Résumé', icon: 'resume' },
   readme: { title: 'readme.txt', icon: 'document' },
   trash: { title: 'Trash', icon: 'trash' },
+  doom: { title: 'Doom', icon: 'doom' },
   game: { title: 'Snake', icon: 'game' },
 };
 const desktop = document.createElement('section');
@@ -57,14 +60,18 @@ desktop.tabIndex = -1; desktop.inert = true;
 desktop.innerHTML = `
   <header class="menubar"><button class="os-menu-trigger" aria-label="Open application menu" aria-expanded="false">▦</button><button class="active-app-name" data-app="about">About</button><div class="menubar-right"><span class="menubar-user">${escape(profile.shortName)}</span><span class="menu-divider"></span><button class="help-button" data-app="readme" aria-label="Help">?</button><time id="clock"></time></div></header>
   <div class="os-menu" hidden>${Object.entries(appInfo).filter(([id]) => id !== 'trash').map(([id, app]) => `<button data-app="${id}">${icon(app.icon)} ${app.title}</button>`).join('')}<hr><button data-action="leave">↶ Back to the desk</button></div>
-  <div class="desktop-shortcuts">${[['projects', 'Applications'], ['game', 'Snake'], ['algorithms', 'Algorithms'], ['readme', 'readme.txt']].map(([id, label]) => `<button class="shortcut" data-app="${id}" title="Open ${label}">${icon(appInfo[id].icon)}<span>${label}</span></button>`).join('')}</div>
+  <div class="desktop-shortcuts">${[['projects', 'Applications'], ['doom', 'Doom'], ['algorithms', 'Algorithms'], ['readme', 'readme.txt']].map(([id, label]) => `<button class="shortcut" data-app="${id}" title="Open ${label}">${icon(appInfo[id].icon)}<span>${label}</span></button>`).join('')}</div>
   <div class="windows" id="windows"></div>
   <div class="desktop-watermark">srujanOS <span>personal edition</span></div>
   <nav class="dock" aria-label="Applications">${['projects', 'about', 'contact', 'algorithms', 'skills', 'terminal', 'resume', 'readme', 'trash'].map((id, i) => `${i === 6 ? '<span class="dock-divider"></span>' : ''}<button class="dock-item" data-app="${id}" aria-label="${appInfo[id].title}" title="${appInfo[id].title}">${icon(appInfo[id].icon)}<span class="dock-tooltip">${appInfo[id].title}</span><span class="running-dot"></span></button>`).join('')}</nav>`;
 
 let scene;
-try { scene = createComputerScene(desktop); }
+document.querySelector('#start-button').disabled = true;
+document.querySelector('#start-button').textContent = 'Loading computer…';
+try { scene = await createComputerScene(desktop, profile); }
 catch { document.body.classList.add('no-webgl'); document.querySelector('#screen-layer').appendChild(desktop); }
+document.querySelector('#start-button').disabled = false;
+document.querySelector('#start-button').textContent = 'Click anywhere to start';
 let started = false, direct = false, sound = settings.soundEnabled, audio;
 const windows = new Map(); let zIndex = 20;
 function playTone() {
@@ -88,7 +95,8 @@ function enter() {
   if (started) return;
   started = true; desktop.inert = false;
   document.body.classList.add('started'); scene?.enter(); playTone();
-  if (innerWidth < 740 || !scene) setDirect(true);
+  document.querySelector('#view-toggle').setAttribute('aria-label', 'View computer');
+  if (innerWidth < 480 || !scene) setDirect(true);
   desktop.focus({ preventScroll: true });
 }
 function leave() {
@@ -99,9 +107,10 @@ function leave() {
 document.querySelector('#start-button').addEventListener('click', enter);
 document.querySelector('#scene').addEventListener('click', enter);
 document.querySelector('#intro').addEventListener('click', enter);
-document.querySelector('#view-toggle').addEventListener('click', () => { if (!started) { enter(); setDirect(true); } else setDirect(!direct); });
+document.querySelector('#view-toggle').addEventListener('click', () => { if (!started) enter(); else leave(); });
 document.querySelector('#sound-toggle').addEventListener('click', () => {
   sound = !sound;
+  document.querySelector('#sound-toggle img').src = '/reference/icons/' + (sound ? 'unmute-icon.svg' : 'mute-icon.svg');
   document.querySelector('#sound-toggle').classList.toggle('sound-on', sound);
   document.querySelector('#sound-toggle').setAttribute('aria-label', sound ? 'Mute sound' : 'Enable sound'); playTone();
 });
@@ -118,7 +127,7 @@ updateClock(); setInterval(updateClock, 1000 * 30);
 const link = (url, text, cls = '') => `<a class="${cls}" href="${safeUrl(url)}" target="_blank" rel="noopener noreferrer">${escape(text)} ↗</a>`;
 const resumeLink = () => profile.resumeUrl ? `<a class="retro-button" href="${safeUrl(profile.resumeUrl)}" download>Download résumé ↓</a>` : '<p class="muted">Résumé will be available here soon.</p>';
 function home() {
-  return `<div class="home-content"><div class="home-mark">${icon('terminal')}</div><p class="eyebrow">HELLO, WORLD.</p><h1>${escape(profile.name)}</h1><p class="home-role">${escape(profile.role)}</p><div class="home-nav">${['About', 'Experience', 'Projects', 'Contact'].map(page => `<button class="retro-button" data-page="${page.toLowerCase()}">${page}</button>`).join('')}</div><p class="home-bottom">Make yourself at home. There’s plenty to click.</p></div>`;
+  return `<div class="home-content"><h1>${escape(profile.name)}</h1><p class="home-role">${escape(profile.role)}</p><div class="home-nav">${['About', 'Experience', 'Projects', 'Contact'].map(page => `<button class="retro-button" data-page="${page.toLowerCase()}">${page}</button>`).join('')}</div></div>`;
 }
 function sideNav(page) {
   return `<aside class="sidebar"><strong>${escape(profile.shortName)}</strong>${['Home', 'About', 'Experience', 'Projects', 'Contact'].map(p => `<button class="retro-button ${page === p.toLowerCase() ? 'selected' : ''}" data-page="${p.toLowerCase()}">${p}</button>`).join('')}<span class="sidebar-footer">EST. ON THE INTERNET</span></aside>`;
@@ -153,12 +162,13 @@ function portfolioPage(page = 'home') {
 }
 function appContent(id) {
   switch (id) {
+    case 'doom': return '<iframe class="doom-frame" src="/doom.html" title="Doom game"></iframe>';
     case 'about': return home();
     case 'projects': return `<div class="standalone-content">${projectsPage()}</div>`;
     case 'contact': return `<div class="standalone-content">${contactPage()}</div>`;
     case 'skills': return `<div class="standalone-content"><h1>My toolbox</h1><p class="page-intro">Technologies and techniques used across my public projects.</p>${skills.map((group, i) => `<section class="skill-group"><h2><span>0${i + 1}</span>${escape(group.title)}</h2><div class="tags">${group.items.map(s => `<span>${escape(s)}</span>`).join('')}</div></section>`).join('')}</div>`;
     case 'resume': return `<div class="standalone-content resume-page">${icon('resume')}<h1>Résumé</h1>${resumeLink()}<p>For now, you can explore my projects and public work on GitHub.</p>${link(profile.github, 'Visit my GitHub', 'retro-button')}</div>`;
-    case 'readme': return `<div class="standalone-content readme"><h1>readme.txt</h1><p>Welcome to ${escape(profile.shortName)}’s personal computer.</p><hr><h2>A quick field guide</h2><p>• Click an icon in the dock to open an app.<br>• Drag a title bar to move a window.<br>• Use − to minimize, □ to maximize, and × to close.<br>• The ▣ button switches between 3D and full desktop views.<br>• Press Escape to close the active window.<br>• Try <code>help</code> in the Terminal.<br>• Open Snake for a short break.</p><h2>Under the hood</h2><p>Built with JavaScript, Three.js, and a little nostalgia. Projects are sourced from GitHub. The computer, keyboard, plants, and icons are original procedural artwork.</p><p>Experience inspired by ${link('https://joeyderuiter.me/', 'Joey de Ruiter’s portfolio')}.</p></div>`;
+    case 'readme': return `<div class="standalone-content readme"><h1>readme.txt</h1><p>Welcome to ${escape(profile.shortName)}’s personal computer.</p><hr><h2>A quick field guide</h2><p>• Click an icon in the dock to open an app.<br>• Drag a title bar to move a window.<br>• Use − to minimize, □ to maximize, and × to close.<br>• The ▣ button switches between 3D and full desktop views.<br>• Press Escape to close the active window.<br>• Try <code>help</code> in the Terminal.<br>• Open Snake for a short break.</p><h2>Under the hood</h2><p>Built with JavaScript, Three.js, and a little nostalgia. Projects are sourced from GitHub. Scene models, textures, and desktop icons are by Joey de Ruiter (0xJ0EY), adapted from Portfolio-next.</p><p>Experience inspired by ${link('https://joeyderuiter.me/', 'Joey de Ruiter’s portfolio')}.</p></div>`;
     case 'trash': return `<div class="empty-state trash-empty">${icon('trash')}<h1>Nothing to see here.</h1><p>The trash is empty. All good ideas are still on the desktop.</p></div>`;
     case 'terminal': return `<div class="terminal-content"><div class="terminal-output" role="log" aria-live="polite"><div>srujanOS [Version 1.0]<br>Welcome, visitor. Type <span class="terminal-accent">help</span> to get started.<br><br></div></div><form class="terminal-form"><label for="terminal-input">visitor@portfolio:~$</label><input id="terminal-input" autocomplete="off" spellcheck="false" aria-label="Terminal command"></form></div>`;
     case 'algorithms': return `<div class="standalone-content"><p class="eyebrow">A LITTLE COMPUTER SCIENCE</p><h1>Sorting, made visible.</h1><p>Watch bubble sort compare neighboring values and move the largest ones to the right.</p><div id="sort-bars" class="sort-bars" role="img" aria-label="Unsorted bars"></div><div class="algorithm-controls"><button class="retro-button" data-action="sort-start">Start sorting</button><button class="retro-button" data-action="sort-reset">Shuffle</button><label>Speed <select id="sort-speed" class="retro-input"><option value="220">Slow</option><option value="80" selected>Normal</option><option value="20">Fast</option></select></label></div><p id="sort-status" class="muted" aria-live="polite">Ready when you are. 18 values, one simple algorithm.</p></div>`;
@@ -179,7 +189,7 @@ function openWindow(id, title, html, windowIcon = appInfo[id]?.icon || 'folder')
   const el = document.createElement('article'); el.className = `retro-window app-${id} active-window`; el.setAttribute('aria-label', title);
   el.setAttribute('role', 'region'); el.dataset.window = id;
   const count = windows.size;
-  el.style.left = `${Math.min(120 + count * 24, 270)}px`; el.style.top = `${Math.min(105 + count * 22, 240)}px`;
+  el.style.left = `${Math.min(145 + count * 24, 270)}px`; el.style.top = `${Math.min(100 + count * 22, 240)}px`;
   el.innerHTML = `<header class="window-titlebar"><div class="window-title">${icon(windowIcon)}<span>${escape(title)}</span></div><div class="window-controls"><button data-window-action="minimize" aria-label="Minimize ${escape(title)}">−</button><button data-window-action="maximize" aria-label="Maximize ${escape(title)}">□</button><button data-window-action="close" aria-label="Close ${escape(title)}">×</button></div></header><div class="window-body">${html}</div><footer class="window-status"><span>${escape(profile.shortName)}’s personal computer</span><span class="resize-grip">◢</span></footer>`;
   desktop.querySelector('#windows').appendChild(el); windows.set(id, { el, title }); focusWindow(id); updateDock(); playTone();
   el.addEventListener('pointerdown', () => focusWindow(id));

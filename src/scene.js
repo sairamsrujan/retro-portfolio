@@ -1,160 +1,75 @@
 import * as THREE from 'three';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { SAOPass } from 'three/addons/postprocessing/SAOPass.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { CSS3DRenderer, CSS3DObject } from 'three/addons/renderers/CSS3DRenderer.js';
 
-// All scene assets are built here from geometry. No borrowed models or textures.
-export function createComputerScene(desktop) {
-  const container = document.querySelector('#scene');
-  const cssContainer = document.querySelector('#screen-layer');
-  const scene = new THREE.Scene();
-  scene.background = new THREE.Color('#d9dbd8');
-  scene.fog = new THREE.Fog('#d9dbd8', 22, 48);
-  const camera = new THREE.PerspectiveCamera(38, innerWidth / innerHeight, .1, 70);
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+// Scene assets: Joey de Ruiter / 0xJ0EY, Portfolio-next. See ATTRIBUTION.md.
+export async function createComputerScene(desktop, profile) {
+  const scene = new THREE.Scene(); scene.background = new THREE.Color(0xfefefe);
+  const camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, .1, 1000);
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-  renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-  renderer.outputColorSpace = THREE.SRGBColorSpace;
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.25;
-  container.appendChild(renderer.domElement);
-  const cssRenderer = new CSS3DRenderer();
-  cssContainer.appendChild(cssRenderer.domElement);
+  document.querySelector('#scene').appendChild(renderer.domElement);
+  const composer = new EffectComposer(renderer);
+  composer.addPass(new RenderPass(scene,camera));
+  const sao = new SAOPass(scene,camera);
+  sao.resolution.set(128,128); sao.params.saoBias=100; sao.params.saoIntensity=.0003; sao.params.saoBlur=false; composer.addPass(sao);
+  const css = new CSS3DRenderer(); document.querySelector('#screen-layer').appendChild(css.domElement);
   const cssScene = new THREE.Scene();
+  const loader = new GLTFLoader(), textures = new THREE.TextureLoader();
+  const path = '/reference/models/';
+  async function material(name) {
+    const map = await textures.loadAsync(path + name + '.jpg'); map.flipY = false;
+    return new THREE.MeshBasicMaterial({ map, side: THREE.DoubleSide });
+  }
+  const labelCanvas=document.createElement('canvas');labelCanvas.width=labelCanvas.height=1024;
+  const label=labelCanvas.getContext('2d');label.fillStyle='#c6c7bc';label.fillRect(0,0,1024,1024);label.fillStyle='#181818';label.textAlign='center';label.font='bold 110px serif';label.fillText(profile.shortName.toUpperCase(),512,200,930);label.font='64px serif';label.fillText('Personal workstation',512,310);
+  const labelMap=new THREE.CanvasTexture(labelCanvas);labelMap.flipY=false;
+  const models = ['Desk', 'SmoothFloor', 'Plant', 'Hydra', 'Mouse', 'Keyboard', 'Monitor', 'Cables'];
+  let display;
+  await Promise.all(models.map(async name => {
+    const model = await loader.loadAsync(path + name + (name === 'Cables' ? '.gltf' : '.glb'));
+    let materials;
+    if (name === 'Keyboard') materials = { Case: await material('KeyboardCase'), key: await material('KeyboardKeyCaps') };
+    else if (name === 'Monitor') materials = { Monitor: await material('Monitor'), Computer: await material('Computer'), NamePlate: new THREE.MeshBasicMaterial({map:labelMap}) };
+    else materials = { all: name === 'Cables' ? new THREE.MeshBasicMaterial({color:0x303030}) : await material(name) };
+    model.scene.traverse(node => {
+      if (!node.isMesh) return;
+      if (node.name === 'Display') { display = node; node.visible = false; return; }
+      node.material = materials.all || materials[node.name] || materials.key;
+    });
+    scene.add(model.scene);
+  }));
+  display.geometry.computeBoundingBox();
+  const box = display.geometry.boundingBox, margin = .1;
+  const width = box.max.x - box.min.x + margin;
+  const height = width * 980 / 1280, depth = box.max.z - box.min.z;
   const screen = new CSS3DObject(desktop);
-  screen.position.set(0, 3.18, .535);
-  screen.scale.setScalar(.00325);
+  screen.position.copy(display.position).add(new THREE.Vector3(box.min.x - margin/2 + width/2, box.min.y - margin/2 + height/2, box.min.z + depth/2 + .005));
+  screen.scale.set(width/1280, Math.hypot(depth,height)/980, 1);
+  screen.rotation.x = Math.atan(height/depth) - Math.PI/2;
   cssScene.add(screen);
-
-  scene.add(new THREE.HemisphereLight(0xffffff, 0x8d9188, 2.5));
-  const sun = new THREE.DirectionalLight(0xfffbea, 4.5);
-  sun.position.set(-5, 12, 7);
-  sun.castShadow = true;
-  sun.shadow.mapSize.set(2048, 2048);
-  Object.assign(sun.shadow.camera, { left: -12, right: 12, top: 12, bottom: -12, near: .1, far: 40 });
-  sun.shadow.normalBias = .035;
-  sun.shadow.bias = -.0001;
-  sun.shadow.radius = 4;
-  scene.add(sun);
-  const fill = new THREE.DirectionalLight(0xffffff, 1.2);
-  fill.position.set(6, 5, -4); scene.add(fill);
-
-  const ivory = new THREE.MeshStandardMaterial({ color: '#c7c4a6', roughness: .8 });
-  const lightIvory = new THREE.MeshStandardMaterial({ color: '#dedbc2', roughness: .75 });
-  const dark = new THREE.MeshStandardMaterial({ color: '#292e2b', roughness: .85 });
-  const keyMaterial = new THREE.MeshStandardMaterial({ color: '#c1c2b3', roughness: .8 });
-  const grayKey = new THREE.MeshStandardMaterial({ color: '#8c958e', roughness: .8 });
-  const tableMat = new THREE.MeshStandardMaterial({ color: '#c3c7c4', roughness: .92 });
-
-  function box(w, h, d, x, y, z, material, parent = scene) {
-    const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), material);
-    mesh.position.set(x, y, z); mesh.castShadow = true; mesh.receiveShadow = true;
-    parent.add(mesh); return mesh;
-  }
-  function roundedBox(w, h, d, x, y, z, mat, bevel = .08, parent = scene) {
-    const shape = new THREE.Shape();
-    const a = -w / 2 + bevel, b = -h / 2 + bevel;
-    shape.moveTo(a, b); shape.lineTo(a + w - bevel * 2, b);
-    shape.lineTo(a + w - bevel * 2, b + h - bevel * 2);
-    shape.lineTo(a, b + h - bevel * 2); shape.closePath();
-    const geo = new THREE.ExtrudeGeometry(shape, { depth: d - bevel * 2, bevelEnabled: true, bevelSegments: 1, steps: 1, bevelSize: bevel, bevelThickness: bevel });
-    geo.translate(0, 0, -d / 2 + bevel);
-    const mesh = new THREE.Mesh(geo, mat); mesh.position.set(x, y, z);
-    mesh.castShadow = true; mesh.receiveShadow = true; parent.add(mesh); return mesh;
-  }
-  function cable(points, radius = .025) {
-    const curve = new THREE.CatmullRomCurve3(points.map(p => new THREE.Vector3(...p)));
-    const mesh = new THREE.Mesh(new THREE.TubeGeometry(curve, 40, radius, 6, false), dark);
-    mesh.castShadow = true; scene.add(mesh);
-  }
-
-  box(12.5, .26, 8, 0, .64, .9, tableMat);
-  box(.25, 2, .25, -5.5, -.47, 3.6, tableMat);
-  box(.25, 2, .25, 5.5, -.47, 3.6, tableMat);
-  const floor = box(200, .15, 200, 0, -1.5, 0, new THREE.MeshStandardMaterial({ color: '#e1e2df', roughness: 1 }));
-  floor.castShadow = false;
-  roundedBox(3.85, .69, 2.55, 0, 1.13, -.15, ivory);
-  box(3.74, .025, 2.42, 0, 1.28, -.13, lightIvory);
-  for (let i = 0; i < 4; i++) box(1.23, .026, .018, -.98, 1.08 - i * .07, 1.136, dark);
-  box(.77, .18, .025, 1.03, 1.15, 1.14, grayKey);
-  box(.61, .032, .015, 1.03, 1.17, 1.16, dark);
-  box(.14, .10, .025, 1.54, 1.14, 1.14, lightIvory);
-  box(.035, .035, .02, .49, 1.14, 1.15, new THREE.MeshStandardMaterial({ color: '#8bae62', emissive: '#76b443', emissiveIntensity: 1 }));
-  roundedBox(1.25, .23, 1.08, 0, 1.59, -.3, ivory, .05);
-  roundedBox(4.08, 3.25, 1.55, 0, 3.18, -.35, ivory, .11);
-  // Layered beveled bezel and recessed screen.
-  box(3.75, 2.87, .03, 0, 3.18, .445, lightIvory);
-  box(3.52, 2.66, .025, 0, 3.18, .48, dark);
-  box(3.35, 2.51, .025, 0, 3.18, .505, new THREE.MeshBasicMaterial({ color: '#55a7aa' }));
-  box(.26, .045, .028, -1.48, 1.77, .46, grayKey);
-  box(.035, .035, .03, 1.53, 1.77, .46, new THREE.MeshStandardMaterial({ color: '#5a9b4f', emissive: '#568b46' }));
-
-  const keyboard = new THREE.Group(); keyboard.position.set(-.23, .9, 2.66); keyboard.rotation.y = -.08; scene.add(keyboard);
-  roundedBox(3.63, .19, 1.28, 0, 0, 0, ivory, .06, keyboard);
-  for (let row = 0; row < 5; row++) {
-    for (let col = 0; col < 14; col++) {
-      if (row === 4 && col > 2 && col < 9) continue;
-      const key = box(.178, .083, .166, -1.59 + col * .226, .13, -.44 + row * .211, (col === 0 || col > 11 || row === 0) ? grayKey : keyMaterial, keyboard);
-      if (row < 4 && col > 0 && col < 12) box(.052, .002, .008, key.position.x -.025, .174, key.position.z -.025, dark, keyboard);
-    }
-  }
-  box(1.28, .08, .16, -.33, .13, .402, keyMaterial, keyboard);
-  roundedBox(.5, .21, .77, 2.63, .92, 2.68, lightIvory, .07);
-  box(.012, .016, .32, 2.63, 1.035, 2.48, grayKey);
-  cable([[2.63, .96, 2.33], [2.82, .85, 1.84], [2.57, .82, .98], [2.07, .83, -.51], [1.8, 1.04, -.8]]);
-  cable([[-1.35, .85, 2.11], [-2.1, .85, 1.85], [-2.2, .85, 1], [-1.7, 1, .6]]);
-
-  function plant(x, z, size, variant = 0) {
-    const group = new THREE.Group(); group.position.set(x, .77, z); group.scale.setScalar(size); scene.add(group);
-    const potMat = new THREE.MeshStandardMaterial({ color: variant ? '#7e8877' : '#a0a18c', roughness: 1, flatShading: true });
-    const pot = new THREE.Mesh(new THREE.CylinderGeometry(.32, .25, .47, 7), potMat); pot.position.y = .235; pot.castShadow = true; group.add(pot);
-    const soil = new THREE.Mesh(new THREE.CircleGeometry(.29, 7), new THREE.MeshStandardMaterial({ color: '#434a32' })); soil.rotation.x = -Math.PI / 2; soil.position.y = .474; group.add(soil);
-    for (let i = 0; i < 9; i++) {
-      const angle = i * 2.4, height = .62 + (i % 3) * .19;
-      const material = new THREE.MeshStandardMaterial({ color: ['#627849', '#3d612f', '#7a8b48'][i % 3], flatShading: true, roughness: .9, side: THREE.DoubleSide });
-      const stem = new THREE.Mesh(new THREE.CylinderGeometry(.018, .025, height, 4), material);
-      stem.position.set(Math.cos(angle) * .09, .45 + height / 2, Math.sin(angle) * .09); stem.rotation.z = Math.sin(angle) * .23; group.add(stem);
-      for (let j = 0; j < 2; j++) {
-        const leaf = new THREE.Mesh(new THREE.ConeGeometry(.11, .48, 3), material);
-        leaf.position.set(Math.cos(angle + j) * .19, .66 + j * .3, Math.sin(angle + j) * .19);
-        leaf.rotation.set(Math.sin(angle) * .8, angle, Math.cos(angle) * .8); leaf.castShadow = true; group.add(leaf);
-      }
-    }
-  }
-  plant(-4.1, .1, 1.05); plant(4.1, .6, .9, 1);
-
-  let zoom = 0, targetZoom = 0, running = true, direct = false, raf, dirty = true;
-  const look = new THREE.Vector3();
+  const center = box.getCenter(new THREE.Vector3()).add(display.position);
+  let zoom = 0, targetZoom = 0, direct = false, last = 0, phase = 0;
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  function resize() {
-    dirty = true;
-    camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
-    renderer.setSize(innerWidth, innerHeight); cssRenderer.setSize(innerWidth, innerHeight);
+  function resize() { camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);composer.setSize(innerWidth,innerHeight);css.setSize(innerWidth,innerHeight); }
+  resize(); window.addEventListener('resize',resize);
+  function frame(t) {
+    requestAnimationFrame(frame);
+    const dt=Math.min((t-last)/1000,.05);last=t;
+    if (direct || document.hidden) return;
+    if (!reduced) phase+=dt*.16;
+    zoom = reduced ? targetZoom : THREE.MathUtils.damp(zoom,targetZoom,6,dt);
+    const theta = Math.sin(phase)*Math.PI/6;
+    const introPosition = new THREE.Vector3().setFromSphericalCoords(10,1,theta).add(new THREE.Vector3(0,6.8,0));
+    const distance = Math.tan(THREE.MathUtils.degToRad(37.5))*((box.max.x-box.min.x)/2+2.4/camera.aspect);
+    const end = new THREE.Vector3().setFromSphericalCoords(distance,Math.atan2(box.max.y-box.min.y,depth),0).add(center);
+    camera.position.copy(introPosition).lerp(end,zoom);
+    camera.lookAt(new THREE.Vector3(0,6.8,0).lerp(center,zoom));
+    camera.updateMatrixWorld();composer.render();css.render(cssScene,camera);
   }
-  window.addEventListener('resize', resize); resize();
-  let previous = 0;
-  function animate(t) {
-    if (!running) return;
-    raf = requestAnimationFrame(animate);
-    if (document.hidden || direct) return;
-    const dt = Math.min((t - previous) / 1000, .05); previous = t;
-    if (!dirty && Math.abs(zoom - targetZoom) < .0001) return;
-    zoom = reduced ? targetZoom : THREE.MathUtils.damp(zoom, targetZoom, 4.5, dt);
-    if (Math.abs(zoom - targetZoom) < .0001) zoom = targetZoom;
-    const portrait = camera.aspect < 1;
-    const distance = portrait ? 19 : 13.4;
-    const endDistance = portrait ? 8.4 : 5.3;
-    camera.position.set(THREE.MathUtils.lerp(2.1, 0, zoom), THREE.MathUtils.lerp(7.6, 3.18, zoom), THREE.MathUtils.lerp(distance, endDistance, zoom));
-    look.set(0, THREE.MathUtils.lerp(2.0, 3.18, zoom), THREE.MathUtils.lerp(.4, .535, zoom));
-    camera.lookAt(look); camera.updateMatrixWorld();
-    renderer.render(scene, camera); cssRenderer.render(cssScene, camera);
-    dirty = false;
-  }
-  raf = requestAnimationFrame(animate);
-  document.addEventListener('visibilitychange', () => { previous = performance.now(); });
-  return {
-    enter() { targetZoom = 1; },
-    reset() { targetZoom = 0; },
-    setDirect(value) { direct = value; if (!value) { previous = performance.now(); dirty = true; } },
-    destroy() { running = false; cancelAnimationFrame(raf); renderer.dispose(); window.removeEventListener('resize', resize); },
-  };
+  requestAnimationFrame(frame);
+  return { enter(){targetZoom=1;},reset(){targetZoom=0;},setDirect(v){direct=v;} };
 }

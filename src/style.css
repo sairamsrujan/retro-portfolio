@@ -265,3 +265,57 @@ button svg { pointer-events: none; }
   .direct-view .resume-page { padding-top: 35px; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; } }
+
+/* Reference fidelity: original scene typography, window chrome and desktop scale. */
+@font-face{font-family:Schoolbook;src:url('/reference/fonts/century_schoolbook.ttf')}
+@font-face{font-family:NotoToto;src:url('/reference/fonts/noto_serif_toto.ttf')}
+@font-face{font-family:Metropolis;src:url('/reference/fonts/Metropolis-Medium.otf')}
+.intro-caption,.intro-hint,.scene-label,.desktop-watermark,.home-mark,.home-bottom,.menubar-user,.help-button,.menu-divider,.os-menu-trigger{display:none}
+.intro-ui{padding:0 0 25vh;justify-content:flex-end}
+#start-button{font:19.2px Metropolis,Arial,sans-serif;padding:10px 20px;background:#000;box-shadow:none}
+#start-button:hover{transform:none;background:#000}
+.scene-controls{top:3px;left:5px;gap:5px}
+.scene-control{width:45px;height:40px;background:#000;box-shadow:none;border:0;padding:10px}
+.scene-control img{width:24px;height:20px}
+.desktop{width:1280px;height:980px;border:32px solid #000;font-family:NotoToto,'Times New Roman',serif;font-size:16px;background:#50aaaf}
+.desktop::after{display:none}
+.menubar{height:40px;background:#aaa;border-bottom:1px solid #555;padding:3px 8px;gap:5px}
+.menubar .active-app-name{font-size:14px!important;font-weight:normal!important;background:#dcdcdc;box-shadow:inset -1px -1px #535353,inset 1px 1px #fff;padding:3px}
+.menubar-right{gap:12px}#clock{font-size:14px}
+.windows{inset:40px 0 0}
+.retro-window{width:900px;height:600px;background:silver;border-color:#eee #555 #555 #eee}
+.window-status{display:none}
+.window-titlebar{height:48px;min-height:48px;background:#999;margin:3px 3px 0}
+.active-window .window-titlebar{background:repeating-linear-gradient(0deg,#593011 0,#593011 1px,#bd691f 1px,#bd691f 4px)}
+.window-title{font-size:20px;background:#aaa;padding:0 5px}
+.active-window .window-title{background:#d87a28}
+.window-title .app-icon{display:none}
+.window-controls{gap:2px;padding:0 4px;background:#ae5e24}
+.window-controls button{width:33px;height:35px;background:#dcdcdc;border-color:#fff #777 #777 #fff;font-size:20px}
+.window-body{margin:4px;background:#fff;border-color:#777 #eee #eee #777}
+.home-content h1{font-family:Schoolbook,serif;font-size:32px;letter-spacing:-1px;font-weight:normal;margin:0}
+.home-role{font-family:Schoolbook,serif;font-size:16px;font-weight:normal;letter-spacing:0;margin:8px 0 12px}
+.retro-button{font-family:NotoToto,serif;font-size:16px;background:#dcdcdc;border-color:#fff #777 #777 #fff;padding:8px;box-shadow:none}
+.home-nav{gap:8px}
+.desktop-shortcuts{right:20px;top:52px;gap:10px}
+.shortcut{width:85px;font-family:NotoToto,serif;font-size:14px;gap:0}
+.shortcut .app-icon{width:52px;height:52px}
+.app-icon{filter:none;object-fit:contain;image-rendering:pixelated}
+.dock{height:84px;bottom:4px;padding:4px;background:silver;gap:8px}
+.dock-item{width:64px;height:70px;padding:0}
+.dock-item .app-icon{width:64px;height:64px}
+.dock-item:hover{transform:none}
+.dock-divider{height:58px;margin:0 7px;background:#333}
+.sidebar{width:192px;padding:24px;background:#fff;border:0;gap:0}
+.sidebar-footer{display:none}
+.sidebar strong{font:24px Schoolbook,serif}
+.sidebar .retro-button{font-size:16px;padding:8px}
+.page-content{padding:24px}
+.page-content h1{font:32px Schoolbook,serif}
+.page-content p{font-size:16px}
+.direct-view .desktop{border:5px solid #222}
+@media(max-width:739px){.direct-view .desktop{border-width:3px}.direct-view .window-titlebar{height:32px;min-height:32px}.direct-view .windows{inset:40px 0 0}.direct-view .menubar{height:40px}.direct-view .window-title{font-size:16px}.direct-view .home-content h1{font-size:26px}.direct-view .home-role{font-size:11px}.direct-view .home-nav{gap:4px}}
+.doom-frame{width:100%;height:100%;border:0;display:block;background:#000}
+.app-doom{width:750px;height:540px}
+.direct-view .os-menu-trigger{display:block}
+@media(max-width:739px){.direct-view .shortcut:nth-child(2),.direct-view .shortcut:nth-child(3){display:flex}.direct-view .desktop-shortcuts{gap:2px}.direct-view .shortcut{width:48px}}

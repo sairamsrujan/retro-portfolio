@@ -1,6 +1,6 @@
 # Your portfolio
 
-An original 3D retro computer and interactive desktop inspired by [Joey de Ruiter's portfolio](https://joeyderuiter.me/). Built with vanilla JavaScript, Three.js, and Vite. No CMS, account, database, or paid API is required to edit or run it.
+A 3D retro computer and interactive desktop inspired by [Joey de Ruiter's portfolio](https://joeyderuiter.me/). Built with vanilla JavaScript, Three.js, and Vite. No CMS, account, database, or paid API is required to edit or run it.
 
 ## Start locally
 
@@ -47,11 +47,11 @@ This refreshes links, languages, tags, and the repository snapshot. It preserves
 ## Change the design
 
 - `src/style.css` — colors, window sizes, fonts, responsive layout.
-- `src/scene.js` — procedural computer, table, keyboard, plants, lighting, camera.
+- `src/scene.js` — reference scene models, baked textures, camera and display alignment.
 - `src/main.js` — window manager, apps, terminal, sorting visualization, Snake.
 - `public/assets/` — your own pictures and resume.
 
-The computer and icons are created from original geometry and SVG, rather than copied reference assets. The optional Google font falls back to a system monospace font if offline.
+The scene models, baked textures, fonts and desktop icons are adapted from Joey de Ruiter’s Portfolio-next repository. See ATTRIBUTION.md for provenance. Reference fonts and scene assets are bundled locally.
 
 ## Deploy anywhere
 
