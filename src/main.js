@@ -1,11 +1,12 @@
 import './style.css';
 import { createComputerScene } from './scene.js';
+import { assetUrl } from './paths.js';
 
 const escape = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const safeUrl = value => /^(https?:\/\/|mailto:|\/)/i.test(value || '') && !String(value).startsWith('//') ? escape(value) : '#';
+const safeUrl = value => /^(https?:\/\/|mailto:|\/)/i.test(value || '') && !String(value).startsWith('//') ? escape(value.startsWith('/') ? assetUrl(value) : value) : '#';
 let content;
 try {
-  const response = await fetch('/content.json');
+  const response = await fetch(assetUrl('content.json'));
   if (!response.ok) throw new Error('Content could not be loaded');
   content = await response.json();
 } catch {
@@ -20,7 +21,7 @@ document.documentElement.style.setProperty('--desktop-color', settings.desktopCo
 
 function icon(type, className = '') {
   const original = {doom:'doom-icon.png',finder:'finder-icon.png',folder:'folder-icon.png',about:'about-app.png',contact:'contact-app.png',skills:'skills-icon.png',terminal:'terminal-icon.png',algorithms:'algorithm-visualizer-icon.png',document:'file-icon.png',resume:'icon-documents-folder.png',trash:'trash-icon.png'};
-  if(original[type]) return `<img class="app-icon ${className}" src="/reference/icons/${original[type]}" alt="" draggable="false">`;
+  if(original[type]) return `<img class="app-icon ${className}" src="${assetUrl('reference/icons/' + original[type])}" alt="" draggable="false">`;
   const shapes = {
     folder: '<path fill="#67b8db" d="M3 12h16l5 5h36v37H3z"/><path fill="#a0d9ed" d="M3 17h57v37H3z"/><path stroke="#4285a4" d="M4 20h55"/>',
     about: '<rect x="9" y="6" width="46" height="51" rx="4" fill="#d3cdb5"/><circle cx="32" cy="24" r="9" fill="#8f9a96"/><path fill="#8f9a96" d="M17 46c0-17 30-17 30 0"/><path stroke="#727b76" d="M19 51h26"/>',
@@ -110,7 +111,7 @@ document.querySelector('#intro').addEventListener('click', enter);
 document.querySelector('#view-toggle').addEventListener('click', () => { if (!started) enter(); else leave(); });
 document.querySelector('#sound-toggle').addEventListener('click', () => {
   sound = !sound;
-  document.querySelector('#sound-toggle img').src = '/reference/icons/' + (sound ? 'unmute-icon.svg' : 'mute-icon.svg');
+  document.querySelector('#sound-toggle img').src = assetUrl('reference/icons/' + (sound ? 'unmute-icon.svg' : 'mute-icon.svg'));
   document.querySelector('#sound-toggle').classList.toggle('sound-on', sound);
   document.querySelector('#sound-toggle').setAttribute('aria-label', sound ? 'Mute sound' : 'Enable sound'); playTone();
 });
@@ -162,7 +163,7 @@ function portfolioPage(page = 'home') {
 }
 function appContent(id) {
   switch (id) {
-    case 'doom': return '<iframe class="doom-frame" src="/doom.html" title="Doom game"></iframe>';
+    case 'doom': return `<iframe class="doom-frame" src="${assetUrl('doom.html')}" title="Doom game"></iframe>`;
     case 'about': return home();
     case 'projects': return `<div class="standalone-content">${projectsPage()}</div>`;
     case 'contact': return `<div class="standalone-content">${contactPage()}</div>`;

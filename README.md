@@ -55,7 +55,13 @@ The scene models, baked textures, fonts and desktop icons are adapted from Joey 
 
 ## Deploy anywhere
 
-`npm run build` creates `dist/`. Upload its contents to any static host (Netlify, Vercel static hosting, Cloudflare Pages, or a web server). For subdirectory hosting such as GitHub Pages, adjust Vite's base URL and the root-relative asset/content paths before deploying. A custom domain at the root works as-is.
+Live portfolio: **https://sairamsrujan.github.io/retro-portfolio/**
+
+GitHub Pages automatically builds and publishes every push to `main` using `.github/workflows/deploy.yml`. To update the website, edit `public/content.json` (or the design files), commit, and push. You can also edit the content file directly on GitHub. Deployment progress appears in the repository's **Actions** tab.
+
+The Pages build uses `npm run build -- --base=/retro-portfolio/`. To preview that version locally, run `npm run preview -- --base=/retro-portfolio/` and open the `/retro-portfolio/` path. Local photo and résumé paths such as `/assets/resume.pdf` automatically use the correct site prefix.
+
+For other static hosts, `npm run build` creates `dist/` using the root path by default. Upload its contents to your host. If you rename the GitHub repository, update the base path in the workflow and the URL above.
 
 The Sites deployment is configured in `.openai/hosting.json`. Content changes require rebuilding and redeploying. The first deployed version is private to the owner.
 

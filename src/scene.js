@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { assetUrl } from './paths.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { SAOPass } from 'three/addons/postprocessing/SAOPass.js';
@@ -19,7 +20,7 @@ export async function createComputerScene(desktop, profile) {
   const css = new CSS3DRenderer(); document.querySelector('#screen-layer').appendChild(css.domElement);
   const cssScene = new THREE.Scene();
   const loader = new GLTFLoader(), textures = new THREE.TextureLoader();
-  const path = '/reference/models/';
+  const path = assetUrl('reference/models/');
   async function material(name) {
     const map = await textures.loadAsync(path + name + '.jpg'); map.flipY = false;
     return new THREE.MeshBasicMaterial({ map, side: THREE.DoubleSide });
